@@ -1,0 +1,37 @@
+#file types
+_ReSharper.*
+*.resharper
+*.DS_Store
+*.tlog
+*.vsp
+*.psess
+*.v11.suo
+*.user
+*.suo
+*.dll
+*.pdb
+#*.Framework.XML
+
+#specific files
+RockJobSchedulerService.Xml
+web.[Cc]onnectionStrings.config
+desktop.ini
+Rock.XML
+pageviews.csv
+RockLogster.csv
+Quartz.xml
+StyleCop.Cache
+
+#specific folders
+[Oo]bj/
+RockWeb/Cache/*
+RockWeb/App_Data/PackageStaging
+/scaffolding.config
+/Build/*
+*.sln.GhostDoc.xml
+/packages
+node_modules
+/PrecompiledWeb
+.remote
+
+Packages/*

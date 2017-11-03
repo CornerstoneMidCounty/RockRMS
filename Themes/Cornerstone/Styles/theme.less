@@ -1,0 +1,328 @@
+﻿
+// Load Master Styles
+// -------------------------
+@import "../../../Styles/Bootstrap/variables.less";
+@import "../../../Styles/_rock-core.less";
+@import "../../../Styles/_store.less";
+@import "../../../Styles/_rock-variables.less";
+@import "_variables.less";
+@import "_variable-overrides.less";
+@import "_print.less";
+
+/*
+    Rock Theme Styles
+
+    1. HTML Overrides
+    2. Bootstrap Overides
+    3. Theme Styling
+    4. Responsive Overrides
+
+*/
+
+// 1. HTML Overrides
+// -------------------------
+
+html {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+}
+
+main {
+    display: block;
+}
+
+hr {
+    border-width: 5px;
+    border-color: darken(@body-bg, 5%)
+}
+
+// 2. Bootstrap Overrides
+// -------------------------
+
+.navbar {
+    position: static; // default is relative which causes the dropdowns to go under the other navbars dispite having a higher z-index - JME 9/9/2013
+    // using fontawesome nav toggle button instead of the BS default
+    .navbar-toggle {
+        padding: 6px 10px;
+
+        i.fa-bars {
+            color: @navbar-inverse-toggle-icon-bar-bg;
+        }
+    }
+}
+
+a:hover i.fs {
+    text-decoration: none;
+}
+
+// 3. Theme Styling
+// -------------------------
+
+.page-icon {
+    display: none;
+}
+
+header {
+    .page-menu,
+    .login-status {
+        float: right;
+    }
+
+    .navbar {
+        background-color: @header-bg;
+        border: 0;
+    }
+}
+
+.navbar-inverse .navbar-nav > li > a {
+    color: @theme-1-text;
+}
+
+.navbar-inverse .navbar-nav > li > a:hover {
+    background-color: rgba(255,255,255,.1);
+}
+
+.navbar-nav > li > a {
+    padding-top: 25px;
+    padding-bottom: 25px;
+    font-weight: 700;
+}
+
+.hero {
+    height:100%;
+    min-width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;             
+    background-position:center;
+    background-size:cover;
+}
+
+.hero__item {
+    max-width: 600px;
+}
+
+@base-spacing-unit: @padding-large-vertical * 3;
+
+.soft-half { padding: @base-spacing-unit / 2; }
+.soft-half-sides { padding-left: @base-spacing-unit / 2; padding-right: @base-spacing-unit / 2; }
+.soft-half-ends { padding-top: @base-spacing-unit / 2; padding-bottom: @base-spacing-unit / 2; }
+.soft-half-top { padding-top: @base-spacing-unit / 2; }
+.soft-half-right { padding-right: @base-spacing-unit / 2; }
+.soft-half-bottom { padding-bottom: @base-spacing-unit / 2; }
+.soft-half-left { padding-left: @base-spacing-unit / 2; }
+
+.soft { padding: @base-spacing-unit; }
+.soft-sides { padding-left: @base-spacing-unit; padding-right: @base-spacing-unit; }
+.soft-ends { padding-top: @base-spacing-unit; padding-bottom: @base-spacing-unit; }
+.soft-top { padding-top: @base-spacing-unit; }
+.soft-right { padding-right: @base-spacing-unit; }
+.soft-bottom { padding-bottom: @base-spacing-unit; }
+.soft-left { padding-left: @base-spacing-unit; }
+
+.soft-double { padding: @base-spacing-unit * 2; }
+.soft-double-sides { padding-left: @base-spacing-unit * 2; padding-right: @base-spacing-unit * 2; }
+.soft-double-ends { padding-top: @base-spacing-unit * 2; padding-bottom: @base-spacing-unit * 2; }
+.soft-double-top { padding-top: @base-spacing-unit * 2; }
+.soft-double-right { padding-right: @base-spacing-unit * 2; }
+.soft-double-bottom { padding-bottom: @base-spacing-unit * 2; }
+.soft-double-left { padding-left: @base-spacing-unit * 2; }
+
+.hard { padding: 0; }
+.hard-sides { padding-left: 0; padding-right: 0; }
+.hard-ends { padding-top: 0; padding-bottom: 0; }
+.hard-top { padding-top: 0; }
+.hard-right { padding-right: 0; }
+.hard-bottom { padding-bottom: 0; }
+.hard-left { padding-left: 0; }
+
+.push-half { margin: @base-spacing-unit / 2; }
+.push-half-sides { margin-left: @base-spacing-unit / 2; margin-right: @base-spacing-unit / 2; }
+.push-half-ends { margin-top: @base-spacing-unit / 2; margin-bottom: @base-spacing-unit / 2; }
+.push-half-top { margin-top: @base-spacing-unit / 2; }
+.push-half-right { margin-right: @base-spacing-unit / 2; }
+.push-half-bottom { margin-bottom: @base-spacing-unit / 2; }
+.push-half-left { margin-left: @base-spacing-unit / 2; }
+
+.push { margin: @base-spacing-unit; }
+.push-sides { margin-left: @base-spacing-unit; margin-right: @base-spacing-unit; }
+.push-ends { margin-top: @base-spacing-unit; margin-bottom: @base-spacing-unit; }
+.push-top { margin-top: @base-spacing-unit; }
+.push-right { margin-right: @base-spacing-unit; }
+.push-bottom { margin-bottom: @base-spacing-unit; }
+.push-left { margin-left: @base-spacing-unit; }
+
+.push-double { margin: @base-spacing-unit * 2; }
+.push-double-sides { margin-left: @base-spacing-unit * 2; margin-right: @base-spacing-unit * 2; }
+.push-double-ends { margin-top: @base-spacing-unit * 2; margin-bottom: @base-spacing-unit * 2; }
+.push-double-top { margin-top: @base-spacing-unit * 2; }
+.push-double-right { margin-right: @base-spacing-unit * 2; }
+.push-double-bottom { margin-bottom: @base-spacing-unit * 2; }
+.push-double-left { margin-left: @base-spacing-unit * 2; }
+
+.flush { margin: 0; }
+.flush-sides { margin-left: 0; margin-right: 0; }
+.flush-ends { margin-top: 0; margin-bottom: 0; }
+.flush-top { margin-top: 0; }
+.flush-right { margin-right: 0; }
+.flush-bottom { margin-bottom: 0; }
+.flush-left { margin-left: 0; }
+
+// homepage items
+// .nav-sub {
+//     li {
+//         border: 1px solid @gray-lighter;
+//         border-radius: @border-radius-base;
+//     }
+// }
+
+footer {
+    margin-bottom: 50px;
+
+    .footer-message {
+        float: left;
+    }
+
+    .footer-address {
+        float: right;
+    }
+}
+
+#splash.error {
+    background-color: @gray-lighter;
+
+    #content {
+        margin-top: 20px;
+        background-color: @body-bg;
+        border-radius: @border-radius-base;
+        padding: 20px;
+    }
+}
+
+.not-found h2 {
+    font-size: 200px;
+    font-weight: @font-weight-bold;
+    letter-spacing: -5px;
+    line-height: 210px;
+
+    i {
+        color: #F03;
+        font-size: 210px;
+        position: relative;
+        top: -12px;
+    }
+}
+
+/* hide block panels */
+.panel.panel-block {
+    border: 0;
+    box-shadow: none;
+
+    & > .panel-heading,
+    & > .rock-panel-drawer {
+        display: none;
+    }
+
+    & > .panel-body {
+        padding: 0;
+
+        .grid.grid-panel {
+            margin: 0;
+        }
+    }
+}
+
+// 4. Responsive Overrides
+// -------------------------
+
+// default styling should be for phones 767px or less
+
+// Small devices (tablets, 768px and up)
+@media (min-width: @screen-sm-min) {
+
+}
+
+// Medium devices (desktops, 992px and up)
+@media (min-width: @screen-md-min) {
+
+.navbar-brand {
+    padding-top: 25px;
+    padding-bottom: 25px;
+}
+
+}
+
+// Large devices (large desktops, 1200px and up)
+@media (min-width: @screen-lg-min) {
+}
+
+@media (max-width: @screen-md-min) {
+
+.handheld-soft-half { padding: @base-spacing-unit / 2; }
+.handheld-soft-half-sides { padding-left: @base-spacing-unit / 2; padding-right: @base-spacing-unit / 2; }
+.handheld-soft-half-ends { padding-top: @base-spacing-unit / 2; padding-bottom: @base-spacing-unit / 2; }
+.handheld-soft-half-top { padding-top: @base-spacing-unit / 2; }
+.handheld-soft-half-right { padding-right: @base-spacing-unit / 2; }
+.handheld-soft-half-bottom { padding-bottom: @base-spacing-unit / 2; }
+.handheld-soft-half-left { padding-left: @base-spacing-unit / 2; }
+
+.handheld-soft { padding: @base-spacing-unit; }
+.handheld-soft-sides { padding-left: @base-spacing-unit; padding-right: @base-spacing-unit; }
+.handheld-soft-ends { padding-top: @base-spacing-unit; padding-bottom: @base-spacing-unit; }
+.handheld-soft-top { padding-top: @base-spacing-unit; }
+.handheld-soft-right { padding-right: @base-spacing-unit; }
+.handheld-soft-bottom { padding-bottom: @base-spacing-unit; }
+.handheld-soft-left { padding-left: @base-spacing-unit; }
+
+.handheld-soft-double { padding: @base-spacing-unit * 2; }
+.handheld-soft-double-sides { padding-left: @base-spacing-unit * 2; padding-right: @base-spacing-unit * 2; }
+.handheld-soft-double-ends { padding-top: @base-spacing-unit * 2; padding-bottom: @base-spacing-unit * 2; }
+.handheld-soft-double-top { padding-top: @base-spacing-unit * 2; }
+.handheld-soft-double-right { padding-right: @base-spacing-unit * 2; }
+.handheld-soft-double-bottom { padding-bottom: @base-spacing-unit * 2; }
+.handheld-soft-double-left { padding-left: @base-spacing-unit * 2; }
+
+.handheld-hard { padding: 0; }
+.handheld-hard-sides { padding-left: 0; padding-right: 0; }
+.handheld-hard-ends { padding-top: 0; padding-bottom: 0; }
+.handheld-hard-top { padding-top: 0; }
+.handheld-hard-right { padding-right: 0; }
+.handheld-hard-bottom { padding-bottom: 0; }
+.handheld-hard-left { padding-left: 0; }
+
+.handheld-push-half { margin: @base-spacing-unit / 2; }
+.handheld-push-half-sides { margin-left: @base-spacing-unit / 2; margin-right: @base-spacing-unit / 2; }
+.handheld-push-half-ends { margin-top: @base-spacing-unit / 2; margin-bottom: @base-spacing-unit / 2; }
+.handheld-push-half-top { margin-top: @base-spacing-unit / 2; }
+.handheld-push-half-right { margin-right: @base-spacing-unit / 2; }
+.handheld-push-half-bottom { margin-bottom: @base-spacing-unit / 2; }
+.handheld-push-half-left { margin-left: @base-spacing-unit / 2; }
+
+.handheld-push { margin: @base-spacing-unit; }
+.handheld-push-sides { margin-left: @base-spacing-unit; margin-right: @base-spacing-unit; }
+.handheld-push-ends { margin-top: @base-spacing-unit; margin-bottom: @base-spacing-unit; }
+.handheld-push-top { margin-top: @base-spacing-unit; }
+.handheld-push-right { margin-right: @base-spacing-unit; }
+.handheld-push-bottom { margin-bottom: @base-spacing-unit; }
+.handheld-push-left { margin-left: @base-spacing-unit; }
+
+.handheld-push-double { margin: @base-spacing-unit * 2; }
+.handheld-push-double-sides { margin-left: @base-spacing-unit * 2; margin-right: @base-spacing-unit * 2; }
+.handheld-push-double-ends { margin-top: @base-spacing-unit * 2; margin-bottom: @base-spacing-unit * 2; }
+.handheld-push-double-top { margin-top: @base-spacing-unit * 2; }
+.handheld-push-double-right { margin-right: @base-spacing-unit * 2; }
+.handheld-push-double-bottom { margin-bottom: @base-spacing-unit * 2; }
+.handheld-push-double-left { margin-left: @base-spacing-unit * 2; }
+
+.handheld-flush { margin: 0; }
+.handheld-flush-sides { margin-left: 0; margin-right: 0; }
+.handheld-flush-ends { margin-top: 0; margin-bottom: 0; }
+.handheld-flush-top { margin-top: 0; }
+.handheld-flush-right { margin-right: 0; }
+.handheld-flush-bottom { margin-bottom: 0; }
+.handheld-flush-left { margin-left: 0; }
+
+}
+
+
+@import "_css-overrides.less";

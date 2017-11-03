@@ -1,0 +1,38 @@
+<section class="nav-sub">
+
+{% if Page.DisplayChildPages == 'true' and Page.Pages != empty %}
+    <div class="list-group">
+    	{% for includedPage in IncludePageList  %}
+    		{% assign path = 'Global' | Page:'Path' %}
+    		{% assign attributeParts = includedPage | PropertyToKeyValue %}
+            <a href="{{ attributeParts.Value }}" class="list-group-item {% if path == attributeParts.Value %}active{% endif%}">
+                {{ attributeParts.Key }}
+            </a>
+        {% endfor %}
+
+        {% for childPage in Page.Pages %}
+            <a href="{{ childPage.Url }}" class="list-group-item {% if childPage.Current == 'true' %}active{% endif%}">
+                {{ childPage.Title }}
+            </a>
+        {% endfor %}
+    </div>
+{% endif %}
+
+</section>
+<p />
+<!--
+<section class="nav-sub">
+
+{% if Page.DisplayChildPages == 'true' and Page.Pages != empty %}
+    <ul class="nav nav-pills nav-stacked nav-categories">
+        {% for childPage in Page.Pages %}
+          <li{% if childPage.Current == 'true' %} class="active"{% endif%}>
+              <a href="{{ childPage.Url }}">{{ childPage.Title }}</a>
+          </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+</section>
+<p />
+-->
