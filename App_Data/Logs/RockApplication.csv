@@ -1679,3 +1679,331 @@ HostingEnvironment caused shutdown
 HostingEnvironment caused shutdown
 11/3/2017 2:09:45 AM,Application Starting...
 11/3/2017 2:09:56 AM,Application Started Successfully
+11/3/2017 8:47:04 AM,Application Ended: Directory rename change notification for 'C:\inetpub\wwwroot'.
+wwwroot dir change or directory rename
+HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/3/2017 8:47:13 AM,Application Starting...
+11/3/2017 8:47:28 AM,Application Started Successfully
+11/3/2017 8:48:49 AM,Application Ended: User code called UnloadAppDomain
+HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/3/2017 8:48:53 AM,Application Starting...
+11/3/2017 8:49:08 AM,Application Started Successfully
+11/3/2017 8:49:37 AM,Application Ended: Directory rename change notification for 'C:\inetpub\wwwroot'.
+wwwroot dir change or directory rename
+HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/3/2017 8:49:48 AM,Application Starting...
+11/3/2017 8:50:03 AM,Application Started Successfully
+11/3/2017 9:12:40 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/3/2017 9:12:45 AM,Application Starting...
+11/3/2017 9:13:00 AM,Application Started Successfully
+11/3/2017 9:16:07 AM,Application Ended: User code called UnloadAppDomain
+HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/3/2017 9:16:22 AM,Application Starting...
+11/3/2017 9:16:36 AM,Application Started Successfully
+11/3/2017 9:16:43 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/3/2017 9:16:48 AM,Application Starting...
+11/3/2017 9:17:03 AM,Application Started Successfully
+11/4/2017 1:00:01 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/4/2017 1:12:09 AM,Application Starting...
+11/4/2017 1:12:21 AM,Application Started Successfully
+11/5/2017 1:00:00 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/5/2017 1:22:29 AM,Application Starting...
+11/5/2017 1:22:41 AM,Application Started Successfully
+11/6/2017 12:00:01 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/6/2017 12:15:26 AM,Application Starting...
+11/6/2017 12:15:38 AM,Application Started Successfully
+11/6/2017 1:00:00 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/6/2017 1:07:21 AM,Application Starting...
+11/6/2017 1:07:32 AM,Application Started Successfully
+11/7/2017 1:00:01 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/7/2017 1:19:14 AM,Application Starting...
+11/7/2017 1:19:26 AM,Application Started Successfully
+11/8/2017 1:00:01 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/8/2017 1:15:48 AM,Application Starting...
+11/8/2017 1:16:00 AM,Application Started Successfully
+11/9/2017 1:00:02 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/9/2017 1:42:30 AM,Application Starting...
+11/9/2017 1:42:42 AM,Application Started Successfully
+11/10/2017 1:00:00 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/10/2017 1:23:17 AM,Application Starting...
+11/10/2017 1:23:30 AM,Application Started Successfully
+11/11/2017 1:00:02 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/11/2017 1:23:52 AM,Application Starting...
+11/11/2017 1:24:04 AM,Application Started Successfully
+11/12/2017 1:00:01 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/12/2017 1:48:41 AM,Application Starting...
+11/12/2017 1:48:52 AM,Application Started Successfully
+11/13/2017 1:00:01 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/13/2017 1:00:51 AM,Application Starting...
+11/13/2017 1:01:02 AM,Application Started Successfully
+11/14/2017 1:00:01 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/14/2017 1:10:16 AM,Application Starting...
+11/14/2017 1:10:28 AM,Application Started Successfully
+11/15/2017 1:00:01 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/15/2017 1:08:14 AM,Application Starting...
+11/15/2017 1:08:26 AM,Application Started Successfully
+11/16/2017 1:00:01 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/16/2017 1:14:25 AM,Application Starting...
+11/16/2017 1:14:37 AM,Application Started Successfully
+11/17/2017 1:00:01 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/17/2017 1:09:08 AM,Application Starting...
+11/17/2017 1:09:20 AM,Application Started Successfully
+11/18/2017 1:00:00 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/18/2017 1:30:16 AM,Application Starting...
+11/18/2017 1:30:28 AM,Application Started Successfully
+11/19/2017 1:00:01 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/19/2017 1:02:23 AM,Application Starting...
+11/19/2017 1:02:35 AM,Application Started Successfully
+11/20/2017 1:00:02 AM,Application Starting...
+11/20/2017 1:00:14 AM,Application Started Successfully
+11/20/2017 1:00:15 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/20/2017 8:54:04 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/20/2017 10:05:25 AM,Application Starting...
+11/20/2017 10:05:36 AM,Application Started Successfully
+11/20/2017 10:15:09 AM,Application Ended: IIS configuration change
+HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/20/2017 10:15:10 AM,Application Starting...
+11/20/2017 10:15:22 AM,Application Started Successfully
+11/20/2017 11:51:12 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/20/2017 11:51:15 AM,Application Starting...
+11/20/2017 11:51:26 AM,Application Started Successfully
+11/20/2017 11:52:28 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/20/2017 11:52:31 AM,Application Starting...
+11/20/2017 11:52:43 AM,Application Started Successfully
+11/21/2017 1:00:01 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/21/2017 1:01:16 AM,Application Starting...
+11/21/2017 1:01:28 AM,Application Started Successfully
+11/22/2017 1:00:01 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/22/2017 1:15:05 AM,Application Starting...
+11/22/2017 1:15:16 AM,Application Started Successfully
+11/23/2017 1:00:01 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/23/2017 1:39:05 AM,Application Starting...
+11/23/2017 1:39:17 AM,Application Started Successfully
+11/24/2017 1:00:00 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/24/2017 1:00:25 AM,Application Starting...
+11/24/2017 1:00:39 AM,Application Started Successfully
+11/25/2017 1:00:01 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/25/2017 2:04:50 AM,Application Starting...
+11/25/2017 2:05:02 AM,Application Started Successfully
+11/26/2017 1:00:00 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/26/2017 1:11:44 AM,Application Starting...
+11/26/2017 1:11:53 AM,Application Started Successfully
+11/27/2017 1:00:01 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/27/2017 1:00:04 AM,Application Starting...
+11/27/2017 1:00:14 AM,Application Started Successfully
+11/28/2017 1:00:02 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/28/2017 2:16:14 AM,Application Starting...
+11/28/2017 2:16:25 AM,Application Started Successfully
+11/29/2017 1:00:00 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/29/2017 1:01:22 AM,Application Starting...
+11/29/2017 1:01:31 AM,Application Started Successfully
+11/30/2017 1:00:01 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+11/30/2017 1:04:41 AM,Application Starting...
+11/30/2017 1:04:50 AM,Application Started Successfully
+12/1/2017 1:00:02 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/1/2017 1:22:42 AM,Application Starting...
+12/1/2017 1:22:51 AM,Application Started Successfully
+12/1/2017 11:15:17 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/1/2017 11:15:22 AM,Application Starting...
+12/1/2017 11:15:30 AM,Application Started Successfully
+12/1/2017 11:19:08 AM,Application Ended: IIS configuration change
+HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/1/2017 11:19:13 AM,Application Starting...
+12/1/2017 11:19:26 AM,Application Started Successfully
+12/1/2017 11:19:50 AM,Application Ended: IIS configuration change
+HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/1/2017 11:20:26 AM,Application Starting...
+12/1/2017 11:20:38 AM,Application Started Successfully
+12/1/2017 11:25:55 AM,Application Ended: IIS configuration change
+HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/1/2017 11:26:04 AM,Application Starting...
+12/1/2017 11:26:16 AM,Application Started Successfully
+12/1/2017 11:29:20 AM,Application Ended: IIS configuration change
+HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/1/2017 11:30:01 AM,Application Starting...
+12/1/2017 11:30:13 AM,Application Started Successfully
+12/1/2017 11:31:28 AM,Application Ended: IIS configuration change
+HostingEnvironment initiated shutdown
+CONFIG change
+HostingEnvironment caused shutdown
+12/1/2017 11:31:28 AM,Application Starting...
+12/1/2017 11:31:37 AM,Application Started Successfully
+12/1/2017 11:31:40 AM,Application Ended: CONFIG change
+HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/1/2017 11:31:48 AM,Application Starting...
+12/1/2017 11:32:00 AM,Application Started Successfully
+12/1/2017 11:32:51 AM,Application Ended: CONFIG change
+HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/1/2017 11:33:03 AM,Application Starting...
+12/1/2017 11:33:15 AM,Application Started Successfully
+12/1/2017 11:33:46 AM,Application Ended: CONFIG change
+HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/1/2017 11:34:04 AM,Application Starting...
+12/1/2017 11:34:17 AM,Application Started Successfully
+12/1/2017 11:37:03 AM,Application Ended: IIS configuration change
+HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/1/2017 11:37:19 AM,Application Starting...
+12/1/2017 11:37:31 AM,Application Started Successfully
+12/1/2017 11:42:57 AM,Application Ended: IIS configuration change
+HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/1/2017 11:43:36 AM,Application Starting...
+12/1/2017 11:43:49 AM,Application Started Successfully
+12/1/2017 11:55:22 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/1/2017 11:55:42 AM,Application Starting...
+12/1/2017 11:55:54 AM,Application Started Successfully
+12/1/2017 11:56:26 AM,Application Ended: IIS configuration change
+HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/1/2017 11:56:34 AM,Application Starting...
+12/1/2017 11:56:46 AM,Application Started Successfully
+12/1/2017 11:58:07 AM,Application Ended: CONFIG change
+HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/1/2017 11:58:26 AM,Application Starting...
+12/1/2017 11:58:38 AM,Application Started Successfully
+12/1/2017 12:00:34 PM,Application Ended: IIS configuration change
+HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/1/2017 12:00:46 PM,Application Starting...
+12/1/2017 12:00:58 PM,Application Started Successfully
+12/1/2017 12:08:35 PM,Application Ended: IIS configuration change
+HostingEnvironment initiated shutdown
+CONFIG change
+HostingEnvironment caused shutdown
+12/1/2017 12:09:37 PM,Application Starting...
+12/1/2017 12:09:50 PM,Application Started Successfully
+12/1/2017 12:25:51 PM,Application Ended: CONFIG change
+HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/1/2017 12:25:56 PM,Application Starting...
+12/1/2017 12:26:08 PM,Application Started Successfully
+12/1/2017 12:31:27 PM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/1/2017 12:31:35 PM,Application Starting...
+12/1/2017 12:31:47 PM,Application Started Successfully
+12/2/2017 1:00:00 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/2/2017 1:07:17 AM,Application Starting...
+12/2/2017 1:07:30 AM,Application Started Successfully
+12/3/2017 1:00:00 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/3/2017 1:08:02 AM,Application Starting...
+12/3/2017 1:08:13 AM,Application Started Successfully
+12/4/2017 1:00:02 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/4/2017 1:09:53 AM,Application Starting...
+12/4/2017 1:10:02 AM,Application Started Successfully
+12/5/2017 1:00:00 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/5/2017 1:27:44 AM,Application Starting...
+12/5/2017 1:27:53 AM,Application Started Successfully
+12/6/2017 1:00:02 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/6/2017 1:41:25 AM,Application Starting...
+12/6/2017 1:41:34 AM,Application Started Successfully
+12/7/2017 1:00:00 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/7/2017 1:02:23 AM,Application Starting...
+12/7/2017 1:02:34 AM,Application Started Successfully
+12/8/2017 1:00:02 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/8/2017 1:02:41 AM,Application Starting...
+12/8/2017 1:02:50 AM,Application Started Successfully
+12/9/2017 1:00:01 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/9/2017 1:04:27 AM,Application Starting...
+12/9/2017 1:04:36 AM,Application Started Successfully
+12/10/2017 1:00:00 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/10/2017 1:01:39 AM,Application Starting...
+12/10/2017 1:01:48 AM,Application Started Successfully
+12/11/2017 1:00:03 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/11/2017 1:20:29 AM,Application Starting...
+12/11/2017 1:20:38 AM,Application Started Successfully
+12/12/2017 1:00:01 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/12/2017 1:43:54 AM,Application Starting...
+12/12/2017 1:44:03 AM,Application Started Successfully
+12/13/2017 1:00:00 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/13/2017 2:19:45 AM,Application Starting...
+12/13/2017 2:20:02 AM,Application Started Successfully
+12/14/2017 1:00:03 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/14/2017 1:05:01 AM,Application Starting...
+12/14/2017 1:05:12 AM,Application Started Successfully
+12/15/2017 1:00:00 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/15/2017 1:02:00 AM,Application Starting...
+12/15/2017 1:02:11 AM,Application Started Successfully
+12/16/2017 1:00:00 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/16/2017 1:22:58 AM,Application Starting...
+12/16/2017 1:23:07 AM,Application Started Successfully
+12/17/2017 1:00:01 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/17/2017 1:09:42 AM,Application Starting...
+12/17/2017 1:09:51 AM,Application Started Successfully
+12/18/2017 1:00:02 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/18/2017 1:01:34 AM,Application Starting...
+12/18/2017 1:01:43 AM,Application Started Successfully
+12/19/2017 12:59:59 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/19/2017 3:01:19 AM,Application Starting...
+12/19/2017 3:01:29 AM,Application Started Successfully
+12/20/2017 1:00:03 AM,Application Ended: HostingEnvironment initiated shutdown
+HostingEnvironment caused shutdown
+12/20/2017 1:51:44 AM,Application Starting...
+12/20/2017 1:51:53 AM,Application Started Successfully

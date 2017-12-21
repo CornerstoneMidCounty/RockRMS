@@ -9,7 +9,7 @@
         </div>
     </div>
 
-    <main class="container soft-double-ends">
+    <main class="container soft-double-ends handheld-soft-ends">
                 
         <!-- Start Content Area -->
 

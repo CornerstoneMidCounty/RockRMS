@@ -327,6 +327,107 @@ mark, .mark {
     position: absolute
 }
 
+/* Navigation Changes */
+.nav > li {
+    margin: 0 5px;
+}
+
+.navbar-brand {
+    float: none;
+}
+
+.navbar-nav > li > a {
+    font-weight: 700;
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+.navbar-collapse .pull-right {
+    float: none !important;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+    color: @theme-1-text;
+}
+
+.navbar-inverse .navbar-nav li > a {
+    border-radius: 3px;
+}
+
+.navbar-inverse .navbar-nav li > a:hover {
+    background-color: @gray;
+    color: @theme-1-text;
+}
+
+.navbar-inverse .navbar-nav > .active > a {
+    background-color: @theme-1;
+    color: @theme-1-text;
+}
+
+.navbar-inverse .navbar-nav > .active:hover > a {
+    background-color: darken(@theme-1, 5%);
+    color: @theme-1-text;
+}
+
+.navbar-header {
+    position: relative;
+}
+
+.navbar-brand img {
+    max-width: 200px;
+    margin-left: 15px;
+}
+
+.navbar .navbar-toggle,
+.navbar .navbar-toggle:focus,
+.navbar .navbar-toggle:hover {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    margin: 0;
+    margin-top: -26px;
+    margin-right: 20px;
+    font-size: 20px;
+    padding: 8px 15px;
+    background-color: @theme-1;
+    border-color: @theme-1;
+}
+
+/* Profile Photo */
+.profile-photo {
+    width: 42px;
+    height: 42px;
+    margin-top: -21px;
+    background-size: cover;
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    border-radius: 3px;
+}
+
+.loginstatus > li {
+    min-width: 180px;
+}
+
+.dropdown-menu > li > a {
+    font-weight: 700;
+}
+
+header .page-menu, header .login-status {
+    float: none;
+}
+
+footer .footer-message {
+    text-align: center;
+    float: none;
+}
+
+footer .footer-address {
+    text-align: center;
+    float: none;
+}
+
 
 
 /*************************
@@ -591,6 +692,10 @@ mark, .mark {
     // Flush
     .handheld-flush-bottom {
         margin-bottom: 0!important
+    }
+
+    .handheld-text-center {
+        text-align: center;
     }
 
     // Ratios
@@ -1564,6 +1669,35 @@ mark, .mark {
 
 /***** LAP AND UP *****/
 @media only screen and (min-width:769px) {
+    .navbar-collapse .pull-right {
+        float: right;
+    }
+
+    .navbar-nav {
+        margin-top: 15px;
+    }
+    
+    .nav > li {
+        margin: 0px;
+    }
+    
+    .page-menu .navbar-nav {
+        margin-right: 25px;
+    }
+    
+    header .page-menu, header .login-status {
+        float: right;
+    }
+    
+    footer .footer-message {
+        text-align: left;
+        float: left;
+    }
+    
+    footer .footer-address {
+        text-align: left;
+        float: right;
+    }
 
     // Flush
     .lap-and-up-flush-bottom {

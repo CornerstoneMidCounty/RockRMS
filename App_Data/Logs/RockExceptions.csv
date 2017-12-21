@@ -37,3 +37,7 @@
 8/18/2017 1:55:18 PM,System.IO.IOException,"Source and destination path must be different."
 9/14/2017 12:00:15 AM,System.Exception,"One or more exceptions occurred processing workflows...
 Contact Us [13] - Justin Sellars ( General Inquiry ) [24]: An exception has been raised that is likely due to a transient failure. If you are connecting to a SQL Azure database consider using SqlAzureExecutionStrategy."
+12/11/2017 7:40:55 PM,System.Data.Entity.Core.EntityException,"An exception has been raised that is likely due to a transient failure. If you are connecting to a SQL Azure database consider using SqlAzureExecutionStrategy."
+12/11/2017 7:40:55 PM,System.Data.Entity.Core.EntityException,"The underlying provider failed on Open."
+12/11/2017 7:40:55 PM,System.Data.Entity.Core.EntityException,"An exception has been raised that is likely due to a transient failure. If you are connecting to a SQL Azure database consider using SqlAzureExecutionStrategy."
+12/11/2017 7:40:55 PM,System.Data.SqlClient.SqlException,"Database 'cornerstonemidco' on server 'cornerstonemidco.database.windows.net' is not currently available.  Please retry the connection later.  If the problem persists, contact customer support, and provide them the session tracing ID of '{AFBAAB20-D9EC-4B41-A777-49A6847FC4E6}'."

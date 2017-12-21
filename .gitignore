@@ -23,6 +23,8 @@ Quartz.xml
 StyleCop.Cache
 
 #specific folders
+App_Data/Cache
+Content/*
 [Oo]bj/
 RockWeb/Cache/*
 RockWeb/App_Data/PackageStaging
