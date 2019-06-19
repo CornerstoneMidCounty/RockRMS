@@ -67,16 +67,15 @@ namespace RockWeb.Blocks.Fundraising
             if ( this.GetAttributeValue( "ShowClipboardIcon" ).AsBoolean() )
             {
                 // Setup for being able to copy text to clipboard
-                RockPage.AddScriptLink( this.Page, "~/Scripts/ZeroClipboard/ZeroClipboard.js" );
+                RockPage.AddScriptLink( this.Page, "~/Scripts/clipboard.js/clipboard.min.js" );
                 string script = string.Format( @"
-    var client = new ZeroClipboard( $('#{0}'));
+    new Clipboard('#{0}');
     $('#{0}').tooltip();
 ", btnCopyToClipboard.ClientID );
                 ScriptManager.RegisterStartupScript( btnCopyToClipboard, btnCopyToClipboard.GetType(), "share-copy", script, true );
-                btnCopyToClipboard.Attributes["data-clipboard-target"] = hfShareUrl.ClientID;
 
                 Uri uri = new Uri( Request.Url.ToString() );
-                hfShareUrl.Value = uri.Scheme + "://" + uri.GetComponents( UriComponents.HostAndPort, UriFormat.UriEscaped ) + CurrentPageReference.BuildUrl();
+                btnCopyToClipboard.Attributes["data-clipboard-text"] = uri.Scheme + "://" + uri.GetComponents( UriComponents.HostAndPort, UriFormat.UriEscaped ) + CurrentPageReference.BuildUrl();
                 btnCopyToClipboard.Visible = true;
             }
             else
@@ -190,11 +189,11 @@ namespace RockWeb.Blocks.Fundraising
             {
                 var person = groupMember.Person;
                 imgProfilePhoto.BinaryFileId = person.PhotoId;
-                imgProfilePhoto.NoPictureUrl = Person.GetPersonPhotoUrl( person, 200, 200 );
+                imgProfilePhoto.NoPictureUrl = Person.GetPersonNoPictureUrl( person, 200, 200 );
 
                 groupMember.LoadAttributes( rockContext );
                 groupMember.Group.LoadAttributes( rockContext );
-                var opportunityType = DefinedValueCache.Read( groupMember.Group.GetAttributeValue( "OpportunityType" ).AsGuid() );
+                var opportunityType = DefinedValueCache.Get( groupMember.Group.GetAttributeValue( "OpportunityType" ).AsGuid() );
 
                 lProfileTitle.Text = string.Format(
                     "{0} Profile for {1}",
@@ -215,10 +214,19 @@ namespace RockWeb.Blocks.Fundraising
         private void CreateDynamicControls( GroupMember groupMember )
         {
             groupMember.LoadAttributes();
+            groupMember.Group.LoadAttributes();
             // GroupMember Attributes (all of them)
             phGroupMemberAttributes.Controls.Clear();
 
-            List<string> excludes = new List<string>();
+            // Exclude any attributes for which the current person has NO EDIT access.
+            // But skip these three special member attributes since they are handled in a special way.
+            List<string> excludes = groupMember.Attributes.Where(
+                a => !a.Value.IsAuthorized( Rock.Security.Authorization.EDIT, this.CurrentPerson ) &&
+                a.Key != "IndividualFundraisingGoal" &&
+                a.Key != "DisablePublicContributionRequests" &&
+                a.Key != "PersonalOpportunityIntroduction" )
+                .Select( a => a.Key ).ToList();
+
             if ( !groupMember.Group.GetAttributeValue( "AllowIndividualDisablingofContributionRequests" ).AsBoolean() )
             {
                 excludes.Add( "DisablePublicContributionRequests" );
@@ -234,7 +242,7 @@ namespace RockWeb.Blocks.Fundraising
             // Person Attributes (the ones they picked in the Block Settings)
             phPersonAttributes.Controls.Clear();
 
-            var personAttributes = this.GetAttributeValue( "PersonAttributes" ).SplitDelimitedValues().AsGuidList().Select( a => AttributeCache.Read( a ) );
+            var personAttributes = this.GetAttributeValue( "PersonAttributes" ).SplitDelimitedValues().AsGuidList().Select( a => AttributeCache.Get( a ) );
             if ( personAttributes.Any() )
             {
                 var person = groupMember.Person;
@@ -258,29 +266,11 @@ namespace RockWeb.Blocks.Fundraising
             var personService = new PersonService( rockContext );
             var person = personService.Get( groupMember.PersonId );
 
-            var changes = new List<string>();
-
             int? orphanedPhotoId = null;
             if ( person.PhotoId != imgProfilePhoto.BinaryFileId )
             {
                 orphanedPhotoId = person.PhotoId;
                 person.PhotoId = imgProfilePhoto.BinaryFileId;
-
-                if ( orphanedPhotoId.HasValue )
-                {
-                    if ( person.PhotoId.HasValue )
-                    {
-                        changes.Add( "Modified the photo." );
-                    }
-                    else
-                    {
-                        changes.Add( "Deleted the photo." );
-                    }
-                }
-                else if ( person.PhotoId.HasValue )
-                {
-                    changes.Add( "Added a photo." );
-                }
 
                 // add or update the Photo Verify group to have this person as Pending since the photo was changed or deleted
                 using ( var photoRequestRockContext = new RockContext() )
@@ -309,7 +299,7 @@ namespace RockWeb.Blocks.Fundraising
             Rock.Attribute.Helper.GetEditValues( phGroupMemberAttributes, groupMember );
 
             // Save selected Person Attributes (The ones picked in Block Settings)
-            var personAttributes = this.GetAttributeValue( "PersonAttributes" ).SplitDelimitedValues().AsGuidList().Select( a => AttributeCache.Read( a ) );
+            var personAttributes = this.GetAttributeValue( "PersonAttributes" ).SplitDelimitedValues().AsGuidList().Select( a => AttributeCache.Get( a ) );
             if ( personAttributes.Any() )
             {
                 person.LoadAttributes( rockContext );
@@ -318,29 +308,9 @@ namespace RockWeb.Blocks.Fundraising
                     Control attributeControl = phPersonAttributes.FindControl( string.Format( "attribute_field_{0}", personAttribute.Id ) );
                     if ( attributeControl != null )
                     {
-                        string originalValue = person.GetAttributeValue( personAttribute.Key );
-                        string newValue = personAttribute.FieldType.Field.GetEditValue( attributeControl, personAttribute.QualifierValues );
-
                         // Save Attribute value to the database
+                        string newValue = personAttribute.FieldType.Field.GetEditValue( attributeControl, personAttribute.QualifierValues );
                         Rock.Attribute.Helper.SaveAttributeValue( person, personAttribute, newValue, rockContext );
-
-                        // Check for changes to write to history
-                        if ( ( originalValue ?? string.Empty ).Trim() != ( newValue ?? string.Empty ).Trim() )
-                        {
-                            string formattedOriginalValue = string.Empty;
-                            if ( !string.IsNullOrWhiteSpace( originalValue ) )
-                            {
-                                formattedOriginalValue = personAttribute.FieldType.Field.FormatValue( null, originalValue, personAttribute.QualifierValues, false );
-                            }
-
-                            string formattedNewValue = string.Empty;
-                            if ( !string.IsNullOrWhiteSpace( newValue ) )
-                            {
-                                formattedNewValue = personAttribute.FieldType.Field.FormatValue( null, newValue, personAttribute.QualifierValues, false );
-                            }
-
-                            History.EvaluateChange( changes, personAttribute.Name, formattedOriginalValue, formattedNewValue, personAttribute.FieldType.Field.IsSensitive() );
-                        }
                     }
                 }
             }
@@ -350,16 +320,6 @@ namespace RockWeb.Blocks.Fundraising
             {
                 rockContext.SaveChanges();
                 groupMember.SaveAttributeValues( rockContext );
-
-                if ( changes.Any() )
-                {
-                    HistoryService.SaveChanges(
-                        rockContext,
-                        typeof( Person ),
-                        Rock.SystemGuid.Category.HISTORY_PERSON_DEMOGRAPHIC_CHANGES.AsGuid(),
-                        person.Id,
-                        changes );
-                }
 
                 if ( orphanedPhotoId.HasValue )
                 {
@@ -455,8 +415,6 @@ namespace RockWeb.Blocks.Fundraising
             var photoGuid = group.GetAttributeValue( "OpportunityPhoto" );
             imgOpportunityPhoto.ImageUrl = string.Format( "~/GetImage.ashx?Guid={0}", photoGuid );
 
-            SetActiveTab( "Updates" );
-
             // Top Main
             string profileLavaTemplate = this.GetAttributeValue( "ProfileLavaTemplate" );
             if ( groupMember.PersonId == this.CurrentPersonId )
@@ -467,7 +425,7 @@ namespace RockWeb.Blocks.Fundraising
                 {
                     warningItems.Add( "photo" );
                 }
-                if ( string.IsNullOrWhiteSpace(groupMember.GetAttributeValue( "PersonalOpportunityIntroduction" ) ) )
+                if ( groupMember.GetAttributeValue( "PersonalOpportunityIntroduction" ).IsNullOrWhiteSpace())
                 {
                     warningItems.Add( "personal opportunity introduction" );
                 }
@@ -487,8 +445,9 @@ namespace RockWeb.Blocks.Fundraising
             bool disablePublicContributionRequests = groupMember.GetAttributeValue( "DisablePublicContributionRequests" ).AsBoolean();
 
             // only show Contribution stuff if the current person is the participant and contribution requests haven't been disabled
-            btnContributionsTab.Visible = !disablePublicContributionRequests && ( groupMember.PersonId == this.CurrentPersonId );
-            
+            bool showContributions = !disablePublicContributionRequests && ( groupMember.PersonId == this.CurrentPersonId );
+            btnContributionsTab.Visible = showContributions;
+
             // Progress
             var entityTypeIdGroupMember = EntityTypeCache.GetId<Rock.Model.GroupMember>();
 
@@ -514,7 +473,7 @@ namespace RockWeb.Blocks.Fundraising
             queryParams.Add( "GroupMemberId", hfGroupMemberId.Value );
             mergeFields.Add( "MakeDonationUrl", LinkedPageUrl( "DonationPage", queryParams ));
 
-            var opportunityType = DefinedValueCache.Read( group.GetAttributeValue( "OpportunityType" ).AsGuid() );
+            var opportunityType = DefinedValueCache.Get( group.GetAttributeValue( "OpportunityType" ).AsGuid() );
 
             string makeDonationButtonText = null;
             if ( groupMember.PersonId == this.CurrentPersonId )
@@ -536,12 +495,15 @@ namespace RockWeb.Blocks.Fundraising
 
             // Tab:Updates
             btnUpdatesTab.Visible = false;
+            bool showContentChannelUpdates = false;
             var updatesContentChannelGuid = group.GetAttributeValue( "UpdateContentChannel" ).AsGuidOrNull();
             if ( updatesContentChannelGuid.HasValue )
             {
                 var contentChannel = new ContentChannelService( rockContext ).Get( updatesContentChannelGuid.Value );
                 if ( contentChannel != null )
                 {
+                    showContentChannelUpdates = true;
+
                     // only show the UpdatesTab if there is another Tab option
                     btnUpdatesTab.Visible = btnContributionsTab.Visible;
 
@@ -554,22 +516,33 @@ namespace RockWeb.Blocks.Fundraising
                 }
             }
 
+            if ( showContentChannelUpdates )
+            {
+                SetActiveTab( "Updates" );
+            }
+            else if (showContributions)
+            {
+                SetActiveTab( "Contributions" );
+            }
+            else
+            {
+                SetActiveTab( "" );
+            }
+
             // Tab: Contributions
             BindContributionsGrid();
 
             // Tab:Comments
-            var noteType = NoteTypeCache.Read( this.GetAttributeValue( "NoteType" ).AsGuid() );
+            var noteType = NoteTypeCache.Get( this.GetAttributeValue( "NoteType" ).AsGuid() );
             if ( noteType != null )
             {
-                notesCommentsTimeline.NoteTypes = new List<NoteTypeCache> { noteType };
+                notesCommentsTimeline.NoteOptions.SetNoteTypes( new List<NoteTypeCache> { noteType } );
             }
 
-            notesCommentsTimeline.EntityId = groupMember.Id;
+            notesCommentsTimeline.NoteOptions.EntityId = groupMember.Id;
 
             // show the Add button on comments for any logged in person
             notesCommentsTimeline.AddAllowed = true;
-
-            notesCommentsTimeline.RebuildNotes( true );
 
             var enableCommenting = group.GetAttributeValue( "EnableCommenting" ).AsBoolean();
 
@@ -589,8 +562,9 @@ namespace RockWeb.Blocks.Fundraising
             }
 
             // if btnContributionsTab is the only visible tab, hide the tab since there is nothing else to tab to
-            if ( !btnUpdatesTab.Visible )
+            if ( !btnUpdatesTab.Visible && btnContributionsTab.Visible )
             {
+                SetActiveTab( "Contributions" );
                 btnContributionsTab.Visible = false;
             }
         }
@@ -623,11 +597,36 @@ namespace RockWeb.Blocks.Fundraising
         protected void gContributions_RowDataBound( object sender, GridViewRowEventArgs e )
         {
             FinancialTransaction financialTransaction = e.Row.DataItem as FinancialTransaction;
-            Literal lAddress = e.Row.FindControl( "lAddress" ) as Literal;
-            if ( financialTransaction != null && lAddress != null && financialTransaction.AuthorizedPersonAliasId.HasValue )
+            if ( financialTransaction != null && 
+                financialTransaction.AuthorizedPersonAlias != null && 
+                financialTransaction.AuthorizedPersonAlias.Person != null )
             {
-                var personAddress = financialTransaction.AuthorizedPersonAlias.Person.GetHomeLocation();
-                lAddress.Text = personAddress.GetFullStreetAddress();
+	            Literal lAddress = e.Row.FindControl( "lAddress" ) as Literal;
+	            if ( lAddress != null )
+	            {
+	                var location = financialTransaction.AuthorizedPersonAlias.Person.GetMailingLocation();
+                    string streetAddress = location != null ? location.GetFullStreetAddress() : string.Empty;
+                    lAddress.Text = financialTransaction.ShowAsAnonymous ? string.Empty : streetAddress;
+                }
+
+	            Literal lPersonName = e.Row.FindControl( "lPersonName" ) as Literal;
+	            if ( lPersonName != null )
+	            {
+	                lPersonName.Text = financialTransaction.ShowAsAnonymous ? "Anonymous" : financialTransaction.AuthorizedPersonAlias.Person.FullName;
+	            }
+
+                // The transaction may have been split with details for one contribution going to the person
+                // and the other details going elsewhere.  We only want to show details that match this group member.
+                Literal lTransactionDetailAmount = e.Row.FindControl( "lTransactionDetailAmount" ) as Literal;
+                if ( lTransactionDetailAmount != null )
+                {
+                    var entityTypeIdGroupMember = EntityTypeCache.GetId<Rock.Model.GroupMember>();
+                    int groupMemberId = hfGroupMemberId.Value.AsInteger();
+                    var amount = financialTransaction.TransactionDetails
+                        .Where( d => d.EntityTypeId.HasValue && d.EntityTypeId == entityTypeIdGroupMember && d.EntityId == groupMemberId )
+                        .Sum( d => ( decimal? ) d.Amount );
+                    lTransactionDetailAmount.Text = amount.FormatAsCurrency();
+                }
             }
         }
 

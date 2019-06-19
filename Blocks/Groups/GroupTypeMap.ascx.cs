@@ -92,7 +92,6 @@ namespace RockWeb.Blocks.Groups
 {% endif %}
 
 ", "", 9 )]
-    [BooleanField( "Enable Debug", "Enabling debug will display the fields of the first 5 groups to help show you wants available for your liquid.", false, "", 10 )]
     public partial class GroupTypeMap : Rock.Web.UI.RockBlock
     {
         #region Fields
@@ -175,7 +174,7 @@ namespace RockWeb.Blocks.Groups
                             #map_canvas {{
                                 width: 100%;
                                 height: 100%;
-                                border-radius: 8px;
+                                border-radius: var(--border-radius-base);
                             }}
                         </style>";
 
@@ -236,7 +235,7 @@ namespace RockWeb.Blocks.Groups
                     personPageParams.Add( "PersonId", string.Empty );
                     var personProfilePage = LinkedPageUrl( "PersonProfilePage", personPageParams );
 
-                    var groupEntityType = EntityTypeCache.Read( typeof( Group ) );
+                    var groupEntityType = EntityTypeCache.Get( typeof( Group ) );
                     var dynamicGroups = new List<dynamic>();
 
 
@@ -311,14 +310,14 @@ namespace RockWeb.Blocks.Groups
                         var groupAttributes = new List<dynamic>();
                         foreach ( AttributeValue value in group.AttributeValues )
                         {
-                            var attrCache = AttributeCache.Read( value.AttributeId );
+                            var attrCache = AttributeCache.Get( value.AttributeId );
                             var dictAttribute = new Dictionary<string, object>();
                             dictAttribute.Add( "Key", attrCache.Key );
                             dictAttribute.Add( "Name", attrCache.Name );
 
                             if ( attrCache != null )
                             {
-                                dictAttribute.Add( "Value", attrCache.FieldType.Field.FormatValueAsHtml( null, value.Value, attrCache.QualifierValues, false ) );
+                                dictAttribute.Add( "Value", attrCache.FieldType.Field.FormatValueAsHtml( null, attrCache.EntityTypeId, group.GroupId, value.Value, attrCache.QualifierValues, false ) );
                             }
                             else
                             {
@@ -359,18 +358,6 @@ namespace RockWeb.Blocks.Groups
                         dynGroup.GroupMembers = groupMembers;
 
                         dynamicGroups.Add( dynGroup );
-                    }
-
-                    // enable showing debug info
-                    if ( GetAttributeValue( "EnableDebug" ).AsBoolean() && IsUserAuthorized( Authorization.EDIT ) )
-                    {
-                        lDebug.Visible = true;
-                        lDebug.Text = dynamicGroups.Take( 5 ).lavaDebugInfo();
-                    }
-                    else
-                    {
-                        lDebug.Visible = false;
-                        lDebug.Text = string.Empty;
                     }
 
                     foreach ( var group in dynamicGroups )
@@ -414,7 +401,7 @@ namespace RockWeb.Blocks.Groups
                     string styleCode = "null";
                     string markerColor = "FE7569";
 
-                    DefinedValueCache dvcMapStyle = DefinedValueCache.Read( GetAttributeValue( "MapStyle" ).AsGuid() );
+                    DefinedValueCache dvcMapStyle = DefinedValueCache.Get( GetAttributeValue( "MapStyle" ).AsGuid() );
                     if ( dvcMapStyle != null )
                     {
                         styleCode = dvcMapStyle.GetAttributeValue( "DynamicMapStyle" );
@@ -432,14 +419,16 @@ namespace RockWeb.Blocks.Groups
                                                     var showInfoWindow = {1}; 
                                                     var mapStyle = {2};
                                                     var pinColor = '{3}';
-                                                    var pinImage = new google.maps.MarkerImage('http://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|' + pinColor,
-                                                        new google.maps.Size(21, 34),
-                                                        new google.maps.Point(0,0),
-                                                        new google.maps.Point(10, 34));
-                                                    var pinShadow = new google.maps.MarkerImage('http://chart.googleapis.com/chart?chst=d_map_pin_shadow',
-                                                        new google.maps.Size(40, 37),
-                                                        new google.maps.Point(0, 0),
-                                                        new google.maps.Point(12, 35));
+
+                                                    var pinImage = {{
+                                                        path: 'M 0,0 C -2,-20 -10,-22 -10,-30 A 10,10 0 1,1 10,-30 C 10,-22 2,-20 0,0 z',
+                                                        fillColor: '#' + pinColor,
+                                                        fillOpacity: 1,
+                                                        strokeColor: '#000',
+                                                        strokeWeight: 1,
+                                                        scale: 1,
+                                                        labelOrigin: new google.maps.Point(0,-28)
+                                                    }};
 
                                                     initializeMap();
 
@@ -472,7 +461,7 @@ namespace RockWeb.Blocks.Groups
                                                                 map: map,
                                                                 title: htmlDecode(group.name),
                                                                 icon: pinImage,
-                                                                shadow: pinShadow
+                                                                label: String.fromCharCode(9679)
                                                             }});
 
                                                             // Allow each marker to have an info window    

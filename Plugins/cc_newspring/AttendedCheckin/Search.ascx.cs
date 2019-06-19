@@ -1,20 +1,4 @@
-﻿// <copyright>
-// Copyright 2013 by the Spark Development Network
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-// </copyright>
-//
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -111,6 +95,22 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
 
                 tbSearchBox.Focus();
             }
+            else
+            {
+                if ( Request.Form["__EVENTARGUMENT"] != null )
+                {
+                    if ( Request.Form["__EVENTARGUMENT"] == "Wedge_Entry" )
+                    {
+                        var dv = DefinedValueCache.Read( Rock.SystemGuid.DefinedValue.CHECKIN_SEARCH_TYPE_SCANNED_ID );
+                        SearchFamilyById( dv, hfSearchEntry.Value );
+                    }
+                    else if ( Request.Form["__EVENTARGUMENT"] == "Family_Id_Search" )
+                    {
+                        var dv = DefinedValueCache.Read( Rock.SystemGuid.DefinedValue.CHECKIN_SEARCH_TYPE_FAMILY_ID );
+                        SearchFamilyById( dv, hfSearchEntry.Value );
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
 
             function refreshKiosk() {{
                 window.clearTimeout(timeout);
-                {1};
+                window.location = ""javascript:{1}"";
             }}
             ", ( CurrentCheckInType != null ? CurrentCheckInType.RefreshInterval.ToString() : "60" ), this.Page.ClientScript.GetPostBackEventReference( lbRefresh, "" ) );
 
@@ -212,7 +212,7 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
             else
             {
                 // Display a warning if the check-in state is active but the schedule is not
-                maWarning.Show( "Check-in does not have an active schedule.", ModalAlertType.Warning );
+                maWarning.Show( "Check-in is not currently active.", ModalAlertType.Warning );
             }
         }
 
@@ -248,6 +248,35 @@ namespace RockWeb.Plugins.cc_newspring.AttendedCheckin
             {
                 NavigateToLinkedPage( "AdminPage" );
                 return;
+            }
+        }
+
+        #endregion
+
+        #region Barcode Scanning
+
+        /// <summary>
+        /// Searches the family by identifier.
+        /// </summary>
+        /// <param name="searchType">Type of the search.</param>
+        /// <param name="searchValue">The search value.</param>
+        private void SearchFamilyById( DefinedValueCache searchType, string searchValue )
+        {
+            CurrentCheckInState.CheckIn.UserEnteredSearch = false;
+            CurrentCheckInState.CheckIn.ConfirmSingleFamily = false;
+            CurrentCheckInState.CheckIn.SearchType = searchType;
+            CurrentCheckInState.CheckIn.SearchValue = searchValue;
+
+            var errors = new List<string>();
+            if ( ProcessActivity( "Family Search", out errors ) )
+            {
+                SaveState();
+                NavigateToNextPage();
+            }
+            else
+            {
+                var errorMsg = "<ul><li>" + errors.AsDelimited( "</li><li>" ) + "</li></ul>";
+                maWarning.Show( errorMsg.Replace( "'", @"\'" ), ModalAlertType.Warning );
             }
         }
 

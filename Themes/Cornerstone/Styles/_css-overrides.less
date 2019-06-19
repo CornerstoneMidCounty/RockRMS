@@ -9,6 +9,19 @@ a {
     text-decoration: underline;
 }
 
+.mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.text-constrained {
+    max-width: 800px;
+}
+
+.page-constrained {
+    max-width: 1280px;
+}
+
 /***** NAVIGATION *****/
 
 header .navbar {
@@ -111,6 +124,7 @@ h1, h2, h3, h4, h5, h6, ul, ol, p, table {
 
 .btn {
     text-decoration: none;
+    font-weight: 900;
 }
 
 mark, .mark {
@@ -688,6 +702,10 @@ footer .footer-address {
 
 /***** HANDHELD *****/
 @media only screen and (max-width:768px) {
+
+    .navbar-collapse.in {
+        margin-top: 25px;
+    }
 
     // Flush
     .handheld-flush-bottom {

@@ -44,6 +44,8 @@ namespace RockWeb.Blocks.Cms
     [DisplayName( "Site Detail" )]
     [Category( "CMS" )]
     [Description( "Displays the details of a specific site." )]
+    [BinaryFileTypeField( "Default File Type", "The default file type to use while uploading Favicon", true,
+        Rock.SystemGuid.BinaryFiletype.DEFAULT, "", 0 )]
     public partial class SiteDetail : RockBlock, IDetailBlock
     {
         #region Properties
@@ -156,7 +158,7 @@ namespace RockWeb.Blocks.Cms
         /// <param name="e">The <see cref="RowEventArgs"/> instance containing the event data.</param>
         protected void gPageAttributes_Edit( object sender, RowEventArgs e )
         {
-            Guid attributeGuid = ( Guid ) e.RowKeyValue;
+            Guid attributeGuid = (Guid)e.RowKeyValue;
             gPageAttributes_ShowEdit( attributeGuid );
         }
 
@@ -170,7 +172,7 @@ namespace RockWeb.Blocks.Cms
             if ( attributeGuid.Equals( Guid.Empty ) )
             {
                 attribute = new Attribute();
-                attribute.FieldTypeId = FieldTypeCache.Read( Rock.SystemGuid.FieldType.TEXT ).Id;
+                attribute.FieldTypeId = FieldTypeCache.Get( Rock.SystemGuid.FieldType.TEXT ).Id;
                 edtPageAttributes.ActionTitle = ActionTitle.Add( "attribute for pages of site " + tbSiteName.Text );
             }
             else
@@ -207,7 +209,7 @@ namespace RockWeb.Blocks.Cms
         /// <param name="e">The <see cref="RowEventArgs"/> instance containing the event data.</param>
         protected void gPageAttributes_Delete( object sender, RowEventArgs e )
         {
-            Guid attributeGuid = ( Guid ) e.RowKeyValue;
+            Guid attributeGuid = (Guid)e.RowKeyValue;
             PageAttributesState.RemoveEntity( attributeGuid );
 
             BindPageAttributesGrid();
@@ -335,7 +337,6 @@ namespace RockWeb.Blocks.Cms
             Site site = siteService.Get( hfSiteId.Value.AsInteger() );
             LayoutService layoutService = new LayoutService( rockContext );
             PageService pageService = new PageService( rockContext );
-            PageViewService pageViewService = new PageViewService( rockContext );
 
             if ( site != null )
             {
@@ -345,17 +346,6 @@ namespace RockWeb.Blocks.Cms
                     site.RegistrationPageId ?? -1,
                     site.PageNotFoundPageId ?? -1
                 };
-
-                foreach ( var pageView in pageViewService
-                    .Queryable()
-                    .Where( t =>
-                        t.Page != null &&
-                        t.Page.Layout != null &&
-                        t.Page.Layout.SiteId == site.Id ) )
-                {
-                    pageView.Page = null;
-                    pageView.PageId = null;
-                }
 
                 var pageQry = pageService.Queryable( "Layout" )
                     .Where( t =>
@@ -381,8 +371,6 @@ namespace RockWeb.Blocks.Cms
                 siteService.Delete( site );
 
                 rockContext.SaveChanges();
-
-                SiteCache.Flush( site.Id );
             }
 
             NavigateToParentPage();
@@ -448,16 +436,33 @@ namespace RockWeb.Blocks.Cms
                 site.ErrorPage = tbErrorPage.Text;
                 site.GoogleAnalyticsCode = tbGoogleAnalytics.Text;
                 site.RequiresEncryption = cbRequireEncryption.Checked;
+                site.EnabledForShortening = cbEnableForShortening.Checked;
                 site.EnableMobileRedirect = cbEnableMobileRedirect.Checked;
                 site.MobilePageId = ppMobilePage.PageId;
                 site.ExternalUrl = tbExternalURL.Text;
                 site.AllowedFrameDomains = tbAllowedFrameDomains.Text;
                 site.RedirectTablets = cbRedirectTablets.Checked;
                 site.EnablePageViews = cbEnablePageViews.Checked;
-                site.PageViewRetentionPeriodDays = nbPageViewRetentionPeriodDays.Text.AsIntegerOrNull();
 
                 site.AllowIndexing = cbAllowIndexing.Checked;
+                site.IsIndexEnabled = cbEnableIndexing.Checked;
+                site.IndexStartingLocation = tbIndexStartingLocation.Text;
+
                 site.PageHeaderContent = cePageHeaderContent.Text;
+
+                int? existingIconId = null;
+                if ( site.FavIconBinaryFileId != imgSiteIcon.BinaryFileId )
+                {
+                    existingIconId = site.FavIconBinaryFileId;
+                    site.FavIconBinaryFileId = imgSiteIcon.BinaryFileId;
+                }
+
+                int? existingLogoId = null;
+                if ( site.SiteLogoBinaryFileId != imgSiteLogo.BinaryFileId )
+                {
+                    existingLogoId = site.SiteLogoBinaryFileId;
+                    site.SiteLogoBinaryFileId = imgSiteLogo.BinaryFileId;
+                }
 
                 var currentDomains = tbSiteDomains.Text.SplitDelimitedValues().ToList<string>();
                 site.SiteDomains = site.SiteDomains ?? new List<SiteDomain>();
@@ -469,6 +474,7 @@ namespace RockWeb.Blocks.Cms
                     siteDomainService.Delete( domain );
                 }
 
+                int order = 0;
                 foreach ( string domain in currentDomains )
                 {
                     SiteDomain sd = site.SiteDomains.Where( d => d.Domain == domain ).FirstOrDefault();
@@ -479,6 +485,7 @@ namespace RockWeb.Blocks.Cms
                         sd.Guid = Guid.NewGuid();
                         site.SiteDomains.Add( sd );
                     }
+                    sd.Order = order++;
                 }
 
                 if ( !site.DefaultPageId.HasValue && !newSite )
@@ -499,6 +506,30 @@ namespace RockWeb.Blocks.Cms
 
                     SaveAttributes( new Page().TypeId, "SiteId", site.Id.ToString(), PageAttributesState, rockContext );
 
+                    if ( existingIconId.HasValue )
+                    {
+                        BinaryFileService binaryFileService = new BinaryFileService( rockContext );
+                        var binaryFile = binaryFileService.Get( existingIconId.Value );
+                        if ( binaryFile != null )
+                        {
+                            // marked the old images as IsTemporary so they will get cleaned up later
+                            binaryFile.IsTemporary = true;
+                            rockContext.SaveChanges();
+                        }
+                    }
+
+                    if ( existingLogoId.HasValue )
+                    {
+                        BinaryFileService binaryFileService = new BinaryFileService( rockContext );
+                        var binaryFile = binaryFileService.Get( existingLogoId.Value );
+                        if ( binaryFile != null )
+                        {
+                            // marked the old images as IsTemporary so they will get cleaned up later
+                            binaryFile.IsTemporary = true;
+                            rockContext.SaveChanges();
+                        }
+                    }
+
                     if ( newSite )
                     {
                         Rock.Security.Authorization.CopyAuthorization( RockPage.Layout.Site, site, rockContext, Authorization.EDIT );
@@ -507,19 +538,31 @@ namespace RockWeb.Blocks.Cms
                     }
                 } );
 
-                foreach ( int pageId in pageService.GetBySiteId( site.Id )
-                    .Select( p => p.Id )
-                    .ToList() )
+                // add/update for the InteractionChannel for this site and set the RetentionPeriod
+                var interactionChannelService = new InteractionChannelService( rockContext );
+                int channelMediumWebsiteValueId = DefinedValueCache.Get( Rock.SystemGuid.DefinedValue.INTERACTIONCHANNELTYPE_WEBSITE.AsGuid() ).Id;
+                var interactionChannelForSite = interactionChannelService.Queryable()
+                    .Where( a => a.ChannelTypeMediumValueId == channelMediumWebsiteValueId && a.ChannelEntityId == site.Id ).FirstOrDefault();
+
+                if ( interactionChannelForSite == null )
                 {
-                    PageCache.Flush( pageId );
+                    interactionChannelForSite = new InteractionChannel();
+                    interactionChannelForSite.ChannelTypeMediumValueId = channelMediumWebsiteValueId;
+                    interactionChannelForSite.ChannelEntityId = site.Id;
+                    interactionChannelService.Add( interactionChannelForSite );
                 }
-                SiteCache.Flush( site.Id );
-                AttributeCache.FlushEntityAttributes();
+
+                interactionChannelForSite.Name = site.Name;
+                interactionChannelForSite.RetentionDuration = nbPageViewRetentionPeriodDays.Text.AsIntegerOrNull();
+                interactionChannelForSite.ComponentEntityTypeId = EntityTypeCache.Get<Rock.Model.Page>().Id;
+
+                rockContext.SaveChanges();
+                
 
                 // Create the default page is this is a new site
                 if ( !site.DefaultPageId.HasValue && newSite )
                 {
-                    var siteCache = SiteCache.Read( site.Id );
+                    var siteCache = SiteCache.Get( site.Id );
 
                     // Create the layouts for the site, and find the first one
                     LayoutService.RegisterLayouts( Request.MapPath( "~" ), siteCache );
@@ -554,8 +597,6 @@ namespace RockWeb.Blocks.Cms
                         site.DefaultPageId = page.Id;
 
                         rockContext.SaveChanges();
-
-                        SiteCache.Flush( site.Id );
                     }
                 }
 
@@ -578,7 +619,7 @@ namespace RockWeb.Blocks.Cms
         {
             // Get the existing attributes for this entity type and qualifier value
             var attributeService = new AttributeService( rockContext );
-            var attributes = attributeService.Get( entityTypeId, qualifierColumn, qualifierValue );
+            var attributes = attributeService.GetByEntityTypeQualifier( entityTypeId, qualifierColumn, qualifierValue, true );
 
             // Delete any of those attributes that were removed in the UI
             var selectedAttributeGuids = viewStateAttributes.Select( a => a.Guid );
@@ -586,7 +627,6 @@ namespace RockWeb.Blocks.Cms
             {
                 attributeService.Delete( attr );
                 rockContext.SaveChanges();
-                Rock.Web.Cache.AttributeCache.Flush( attr.Id );
             }
 
             // Update the Attributes that were assigned in the UI
@@ -614,6 +654,16 @@ namespace RockWeb.Blocks.Cms
                 var site = new SiteService( new RockContext() ).Get( hfSiteId.Value.AsInteger() );
                 ShowReadonlyDetails( site );
             }
+        }
+
+        /// <summary>
+        /// Handles the CheckedChanged event of the cbEnableIndexing control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        protected void cbEnableIndexing_CheckedChanged( object sender, EventArgs e )
+        {
+            SetControlsVisiblity();
         }
 
         /// <summary>
@@ -677,6 +727,16 @@ namespace RockWeb.Blocks.Cms
                 // hide the panel drawer that show created and last modified dates
                 pdAuditDetails.Visible = false;
             }
+            else
+            {
+                if ( site.DefaultPageId.HasValue )
+                {
+                    lVisitSite.Text = string.Format( @"<a href=""{0}{1}"" target=""_blank""><span class=""label label-info"">Visit Site</span></a>", ResolveRockUrl( "~/page/" ), site.DefaultPageId );
+                }
+            }
+
+            Guid fileTypeGuid = GetAttributeValue( "DefaultFileType" ).AsGuid();
+            imgSiteIcon.BinaryFileTypeGuid = fileTypeGuid;
 
             // set theme compile button
             if ( !new RockTheme( site.Theme ).AllowsCompile )
@@ -756,6 +816,9 @@ namespace RockWeb.Blocks.Cms
             ddlTheme.Enabled = !site.IsSystem;
             ddlTheme.SetValue( site.Theme );
 
+            imgSiteIcon.BinaryFileId = site.FavIconBinaryFileId;
+            imgSiteLogo.BinaryFileId = site.SiteLogoBinaryFileId;
+
             if ( site.DefaultPageRoute != null )
             {
                 ppDefaultPage.SetValue( site.DefaultPageRoute );
@@ -812,9 +875,10 @@ namespace RockWeb.Blocks.Cms
 
             tbErrorPage.Text = site.ErrorPage;
 
-            tbSiteDomains.Text = string.Join( "\n", site.SiteDomains.Select( dom => dom.Domain ).ToArray() );
+            tbSiteDomains.Text = string.Join( "\n", site.SiteDomains.OrderBy( d => d.Order ).Select( d => d.Domain ).ToArray() );
             tbGoogleAnalytics.Text = site.GoogleAnalyticsCode;
             cbRequireEncryption.Checked = site.RequiresEncryption;
+            cbEnableForShortening.Checked = site.EnabledForShortening;
 
             cbEnableMobileRedirect.Checked = site.EnableMobileRedirect;
             ppMobilePage.SetValue( site.MobilePage );
@@ -823,9 +887,29 @@ namespace RockWeb.Blocks.Cms
             cbRedirectTablets.Checked = site.RedirectTablets;
             cbEnablePageViews.Checked = site.EnablePageViews;
 
+            int channelMediumWebsiteValueId = DefinedValueCache.Get( Rock.SystemGuid.DefinedValue.INTERACTIONCHANNELTYPE_WEBSITE.AsGuid() ).Id;
+            var interactionChannelForSite = new InteractionChannelService( new RockContext() ).Queryable()
+                .Where( a => a.ChannelTypeMediumValueId == channelMediumWebsiteValueId && a.ChannelEntityId == site.Id ).FirstOrDefault();
+
+            if ( interactionChannelForSite != null )
+            {
+                nbPageViewRetentionPeriodDays.Text = interactionChannelForSite.RetentionDuration.ToString();
+            }
+
+            cbEnableIndexing.Checked = site.IsIndexEnabled;
+            tbIndexStartingLocation.Text = site.IndexStartingLocation;
+
+            // disable the indexing features if indexing on site is disabled
+            var siteEntityType = EntityTypeCache.Get( "Rock.Model.Site" );
+            if ( siteEntityType != null && !siteEntityType.IsIndexingEnabled )
+            {
+                cbEnableIndexing.Visible = false;
+                tbIndexStartingLocation.Visible = false;
+            }
+            
             var attributeService = new AttributeService( new RockContext() );
             var siteIdQualifierValue = site.Id.ToString();
-            PageAttributesState = attributeService.GetByEntityTypeId( new Page().TypeId ).AsQueryable()
+            PageAttributesState = attributeService.GetByEntityTypeId( new Page().TypeId, true ).AsQueryable()
                 .Where( a =>
                     a.EntityTypeQualifierColumn.Equals( "SiteId", StringComparison.OrdinalIgnoreCase ) &&
                     a.EntityTypeQualifierValue.Equals( siteIdQualifierValue ) )
@@ -851,7 +935,7 @@ namespace RockWeb.Blocks.Cms
             lSiteDescription.Text = site.Description;
 
             DescriptionList descriptionList = new DescriptionList();
-            descriptionList.Add( "Domain(s)", site.SiteDomains.Select( d => d.Domain ).ToList().AsDelimited( ", " ) );
+            descriptionList.Add( "Domain(s)", site.SiteDomains.OrderBy( d => d.Order ).Select( d => d.Domain ).ToList().AsDelimited( ", " ) );
             descriptionList.Add( "Theme", site.Theme );
             descriptionList.Add( "Default Page", site.DefaultPageRoute );
             lblMainDetails.Text = descriptionList.Html;
@@ -870,7 +954,7 @@ namespace RockWeb.Blocks.Cms
         }
 
         /// <summary>
-        /// Sets the controls visiblity.
+        /// Sets the controls visibility.
         /// </summary>
         private void SetControlsVisiblity()
         {
@@ -880,6 +964,8 @@ namespace RockWeb.Blocks.Cms
             cbRedirectTablets.Visible = mobileRedirectVisible;
 
             nbPageViewRetentionPeriodDays.Visible = cbEnablePageViews.Checked;
+
+            tbIndexStartingLocation.Visible = cbEnableIndexing.Checked;
         }
 
         #endregion

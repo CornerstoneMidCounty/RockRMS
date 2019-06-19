@@ -5,7 +5,7 @@
         top: 200px;
     }
 </style>
-<script> 
+<script>
     var timeout = 0;
 </script>
 
@@ -49,7 +49,9 @@
                 var $CountdownTimer = $('.countdown-timer');
 
                 if ($ActiveWhen.text() != '') {
-                    var timeActive = new Date($ActiveWhen.text());
+                    // Ensure date is parsed as local timezone
+                    var tc = $ActiveWhen.text().split(/\D/);
+                    var timeActive = new Date(tc[0], tc[1]-1, tc[2], tc[3], tc[4], tc[5]);
                     $CountdownTimer.countdown({
                         until: timeActive,
                         compact: true,
@@ -75,13 +77,15 @@
                                 $('#hfSearchEntry').val(keyboardBuffer);
                                 keyboardBuffer = '';
                                 swipeProcessing = true;
-                                __doPostBack('hfSearchEntry', 'Wedge_Entry');
+                                window.location = "javascript:__doPostBack('hfSearchEntry', 'Wedge_Entry')";
                             }
                         }
                         else {
                             if ((date.getTime() - lastKeyPress) > 500) {
+                                // if it's been more than 500ms, assume it is a new wedge read, so start a new keyboardBuffer
                                 keyboardBuffer = String.fromCharCode(e.which);
                             } else if ((date.getTime() - lastKeyPress) < 100) {
+                                // if it's been more less than 100ms, assume a wedge read is coming in and append to the keyboardBuffer
                                 keyboardBuffer += String.fromCharCode(e.which);
                             }
                         }
@@ -93,14 +97,14 @@
                                 keyboardBuffer = '';
                                 swipeProcessing = true;
                                 console.log('processing');
-                                __doPostBack('hfSearchEntry', 'Wedge_Entry');
+                                window.location = "javascript:__doPostBack('hfSearchEntry', 'Wedge_Entry')";
                             }
                         }
 
                         // stop the keypress
                         e.preventDefault();
 
-                    } 
+                    }
 
                     lastKeyPress = date.getTime();
 
@@ -108,10 +112,21 @@
 
                 function submitFamilyIdSearch( familyIds ) {
                     $('#hfSearchEntry').val(familyIds);
-                    __doPostBack('hfWedgeEntry', 'Family_Id_Search');
+                    window.location = "javascript:__doPostBack('hfWedgeEntry', 'Family_Id_Search')";
                 }
 
-                if ($('.js-manager-login').is(':visible')) {
+                // try to find the start button using js-start-button hook, otherwise, just hook to the first anchor tag
+                var $startButton = $('.js-start-button-container .js-start-button');
+                if ($startButton.length == 0) {
+                    $startButton = $('.js-start-button-container a');
+                }
+
+                // handle click of start button in js-start-button-container
+                $startButton.on('click', function (a, b, c) {
+                    window.location = "javascript:__doPostBack('<%=upContent.ClientID%>', 'StartClick')";
+                });
+
+                if ($('.js-manager-login').length) {
                     $('.tenkey a.digit').click(function () {
                         $phoneNumber = $("input[id$='tbPIN']");
                         $phoneNumber.val($phoneNumber.val() + $(this).html());
@@ -211,8 +226,9 @@
             <div class="checkin-body">
                 <div class="checkin-scroll-panel">
                     <div class="scroller">
-                        <div class="checkin-search-actions checkin-start">
-                            <asp:LinkButton CssClass="btn btn-primary btn-checkin" ID="lbSearch" runat="server" OnClick="lbSearch_Click" Text="Check In"></asp:LinkButton>
+                        <%-- lStartButtonHtml will be the button HTML from Lava  --%>
+                        <div class="js-start-button-container">
+                            <asp:Literal ID="lStartButtonHtml" runat="server" />
                         </div>
                     </div>
                 </div>
@@ -278,34 +294,31 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="checkin-search-body">
-                                    <Rock:RockTextBox ID="tbPIN" CssClass="checkin-phone-entry" TextMode="Password" runat="server" Label="PIN" />
+                                    <Rock:RockTextBox ID="tbPIN" CssClass="checkin-phone-entry input-lg" TextMode="Password" runat="server" Label="PIN" />
 
                                     <div class="tenkey checkin-phone-keypad">
                                         <div>
-                                            <a href="#" class="btn btn-default btn-lg digit">1</a>
-                                            <a href="#" class="btn btn-default btn-lg digit">2</a>
-                                            <a href="#" class="btn btn-default btn-lg digit">3</a>
+                                            <a href="#" class="btn btn-default btn-lg btn-keypad digit">1</a>
+                                            <a href="#" class="btn btn-default btn-lg btn-keypad digit">2</a>
+                                            <a href="#" class="btn btn-default btn-lg btn-keypad digit">3</a>
                                         </div>
                                         <div>
-                                            <a href="#" class="btn btn-default btn-lg digit">4</a>
-                                            <a href="#" class="btn btn-default btn-lg digit">5</a>
-                                            <a href="#" class="btn btn-default btn-lg digit">6</a>
+                                            <a href="#" class="btn btn-default btn-lg btn-keypad digit">4</a>
+                                            <a href="#" class="btn btn-default btn-lg btn-keypad digit">5</a>
+                                            <a href="#" class="btn btn-default btn-lg btn-keypad digit">6</a>
                                         </div>
                                         <div>
-                                            <a href="#" class="btn btn-default btn-lg digit">7</a>
-                                            <a href="#" class="btn btn-default btn-lg digit">8</a>
-                                            <a href="#" class="btn btn-default btn-lg digit">9</a>
+                                            <a href="#" class="btn btn-default btn-lg btn-keypad digit">7</a>
+                                            <a href="#" class="btn btn-default btn-lg btn-keypad digit">8</a>
+                                            <a href="#" class="btn btn-default btn-lg btn-keypad digit">9</a>
                                         </div>
                                         <div>
-                                            <a href="#" class="btn btn-default btn-lg command back">Back</a>
-                                            <a href="#" class="btn btn-default btn-lg digit">0</a>
-                                            <a href="#" class="btn btn-default btn-lg command clear">Clear</a>
+                                            <a href="#" class="btn btn-default btn-lg btn-keypad command clear">Clear</a>
+                                            <a href="#" class="btn btn-default btn-lg btn-keypad digit">0</a>
+                                            <a href="#" class="btn btn-default btn-lg btn-keypad command back"><i class="fas fa-backspace"></i></a>
                                         </div>
                                     </div>
 
-                                    <div class="checkin-actions">
-                                        <asp:LinkButton ID="lbLogin" runat="server" OnClick="lbLogin_Click" CssClass="btn btn-primary">Login</asp:LinkButton>
-                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -325,7 +338,8 @@
             <div class="checkin-footer">
 
                 <div class="checkin-actions">
-                    <asp:LinkButton ID="lbCancel" runat="server" CausesValidation="false" OnClick="lbCancel_Click" CssClass="btn btn-default">Cancel</asp:LinkButton>
+                    <asp:LinkButton ID="lbLogin" runat="server" OnClick="lbLogin_Click" CssClass="btn btn-primary">Login</asp:LinkButton>
+                    <asp:LinkButton ID="lbCancel" runat="server" CausesValidation="false" OnClick="lbCancel_Click" CssClass="btn btn-default btn-cancel">Cancel</asp:LinkButton>
                 </div>
             </div>
 

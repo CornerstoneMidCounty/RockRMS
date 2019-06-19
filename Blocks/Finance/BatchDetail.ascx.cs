@@ -71,10 +71,23 @@ namespace RockWeb.Blocks.Finance
         {
             base.OnLoad( e );
 
+            var batchId = PageParameter( "batchId" ).AsInteger();
             if ( !Page.IsPostBack )
             {
-                ShowDetail( PageParameter( "batchId" ).AsInteger() );
+                ShowDetail( batchId );
             }
+
+            // Add any attribute controls. 
+            // This must be done here regardless of whether it is a postback so that the attribute values will get saved.
+            var financialBatch = new FinancialBatchService( new RockContext() ).Get( batchId );
+            if ( financialBatch == null )
+            {
+                financialBatch = new FinancialBatch();
+            }
+
+            financialBatch.LoadAttributes();
+            phAttributes.Controls.Clear();
+            Helper.AddEditControls( financialBatch, phAttributes, true, BlockValidationGroup );
         }
 
         /// <summary>
@@ -164,14 +177,14 @@ namespace RockWeb.Blocks.Finance
             var batchService = new FinancialBatchService( rockContext );
             FinancialBatch batch = null;
 
-            var changes = new List<string>();
+            var changes = new History.HistoryChangeList();
 
             int batchId = hfBatchId.Value.AsInteger();
             if ( batchId == 0 )
             {
                 batch = new FinancialBatch();
                 batchService.Add( batch );
-                changes.Add( "Created the batch" );
+                changes.AddChange( History.HistoryVerb.Add, History.HistoryChangeType.Record, "Batch" );
             }
             else
             {
@@ -207,13 +220,13 @@ namespace RockWeb.Blocks.Finance
                 CampusCache oldCampus = null;
                 if ( batch.CampusId.HasValue )
                 {
-                    oldCampus = CampusCache.Read( batch.CampusId.Value );
+                    oldCampus = CampusCache.Get( batch.CampusId.Value );
                 }
 
                 CampusCache newCampus = null;
                 if ( campCampus.SelectedCampusId.HasValue )
                 {
-                    newCampus = CampusCache.Read( campCampus.SelectedCampusId.Value );
+                    newCampus = CampusCache.Get( campCampus.SelectedCampusId.Value );
                 }
 
                 History.EvaluateChange( changes, "Campus", oldCampus != null ? oldCampus.Name : "None", newCampus != null ? newCampus.Name : "None" );
@@ -253,6 +266,9 @@ namespace RockWeb.Blocks.Finance
                     return;
                 }
 
+                batch.LoadAttributes( rockContext );
+                Rock.Attribute.Helper.GetEditValues( phAttributes, batch );
+
                 rockContext.WrapTransaction( () =>
                 {
                     if ( rockContext.SaveChanges() > 0 )
@@ -269,6 +285,8 @@ namespace RockWeb.Blocks.Finance
                         }
                     }
                 } );
+
+                batch.SaveAttributeValues( rockContext );
 
                 if ( batchId == 0 )
                 {
@@ -377,7 +395,7 @@ namespace RockWeb.Blocks.Finance
 
             if ( batch == null )
             {
-                batch = new FinancialBatch { Id = 0 };
+                batch = new FinancialBatch { Id = 0, Status = BatchStatus.Open };
 
                 // hide the panel drawer that show created and last modified dates
                 pdAuditDetails.Visible = false;
@@ -440,7 +458,7 @@ namespace RockWeb.Blocks.Finance
                 string campusName = string.Empty;
                 if ( batch.CampusId.HasValue )
                 {
-                    var campus = CampusCache.Read( batch.CampusId.Value );
+                    var campus = CampusCache.Get( batch.CampusId.Value );
                     if ( campus != null )
                     {
                         campusName = campus.ToString();
@@ -468,6 +486,13 @@ namespace RockWeb.Blocks.Finance
                     .Add( "Accounting Code", batch.AccountingSystemCode )
                     .Add( "Notes", batch.Note )
                     .Html;
+
+                batch.LoadAttributes();
+                var attributes = batch.Attributes.Select( a => a.Value ).OrderBy( a => a.Order ).ThenBy( a => a.Name ).ToList();
+
+                var attributeCategories = Helper.GetAttributeCategories( attributes );
+
+                Rock.Attribute.Helper.AddDisplayControls( batch, attributeCategories, phReadonlyAttributes, null, false );
 
                 // Account Summary
                 gAccounts.DataSource = qryTransactionDetails
@@ -525,7 +550,7 @@ namespace RockWeb.Blocks.Finance
 
                 if ( batchNamesDefinedTypeGuid.HasValue )
                 {
-                    var batchNamesDefinedType = DefinedTypeCache.Read( batchNamesDefinedTypeGuid.Value );
+                    var batchNamesDefinedType = DefinedTypeCache.Get( batchNamesDefinedTypeGuid.Value );
                     if ( batchNamesDefinedType != null )
                     {
                         ddlBatchName.BindToDefinedType( batchNamesDefinedType, true, false );
@@ -560,6 +585,11 @@ namespace RockWeb.Blocks.Finance
                     {
                         ddlStatus.Enabled = false;
                     }
+                }
+
+                if ( batch.IsAutomated == true && batch.Status == BatchStatus.Pending )
+                {
+                    ddlStatus.Enabled = false;
                 }
 
                 campCampus.Campuses = CampusCache.All();
@@ -631,6 +661,8 @@ namespace RockWeb.Blocks.Finance
 
             hlBatchId.Text = string.Format( "Batch #{0}", batch.Id.ToString() );
             hlBatchId.Visible = batch.Id != 0;
+
+            hlIsAutomated.Visible = batch.IsAutomated;
         }
 
         /// <summary>

@@ -90,6 +90,16 @@ html {
     padding: 0 !important;
 }
 
+.hard-sides {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.hard-ends {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
 .hard-top {
     padding-top: 0 !important;
 }
@@ -261,7 +271,7 @@ html {
 }
 
 .checkin-footer {
-    position: relative;
+    /*position: relative;*/
 }
 
 .datepicker, .modal-content {
@@ -323,6 +333,10 @@ button.close {
     -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
     letter-spacing: -.5px;
+}
+
+.button-bar .btn {
+    width: inherit;
 }
 
 .btn-checkin-select {
@@ -587,6 +601,10 @@ span.month, span.year {
     font-size: 1.5em;
 }
 
+.force-wrap {
+    white-space: normal !important;
+}
+
 .full-width {
     width: 100%;
 }
@@ -600,7 +618,6 @@ span.month, span.year {
     margin-right: auto;
     text-align: center;
 }
-
 
 /*
     Modal Styles

@@ -102,7 +102,7 @@ namespace RockWeb.Blocks.Fundraising
         {
             RockContext rockContext = new RockContext();
             GroupService groupService = new GroupService( rockContext );
-            var groupTypeIdFundraising = GroupTypeCache.Read( Rock.SystemGuid.GroupType.GROUPTYPE_FUNDRAISINGOPPORTUNITY.AsGuid() ).Id;
+            var groupTypeIdFundraising = GroupTypeCache.Get( Rock.SystemGuid.GroupType.GROUPTYPE_FUNDRAISINGOPPORTUNITY.AsGuid() ).Id;
             var fundraisingGroupTypeIdList = new GroupTypeService( rockContext ).Queryable().Where( a => a.Id == groupTypeIdFundraising || a.InheritedGroupTypeId == groupTypeIdFundraising ).Select( a => a.Id ).ToList();
 
             var fundraisingGroupList = groupService.Queryable()
@@ -120,7 +120,7 @@ namespace RockWeb.Blocks.Fundraising
                 fundraisingGroupList = fundraisingGroupList.Where( a => fundraisingOpportunityTypes.Contains( a.GetAttributeValue( "OpportunityType" ).AsGuid() ) ).ToList();
             }
 
-            fundraisingGroupList = fundraisingGroupList.OrderBy( g => DateRangePicker.CalculateDateRangeFromDelimitedValues( g.GetAttributeValue( "OpportunityDateRange" ) ).Start ).ThenBy( g => g.GetAttributeValue( "Opportunity Title" ) ).ToList();
+            fundraisingGroupList = fundraisingGroupList.OrderBy( g => DateRange.FromDelimitedValues( g.GetAttributeValue( "OpportunityDateRange" ) ).Start ).ThenBy( g => g.GetAttributeValue( "Opportunity Title" ) ).ToList();
 
             var mergeFields = Rock.Lava.LavaHelper.GetCommonMergeFields( this.RockPage, null, new Rock.Lava.CommonMergeFieldsOptions { GetLegacyGlobalMergeFields = false } );
             mergeFields.Add( "GroupList", fundraisingGroupList );
